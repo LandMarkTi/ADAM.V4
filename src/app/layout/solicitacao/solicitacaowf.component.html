@@ -1,0 +1,399 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Solicitação Workflow'" [icon]="'fa-edit'"></app-page-header>
+
+  
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <form class="form-horizontal" (submit)="onFormSubmit($event)">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Cliente</label>                  
+                  <div class="col-lg-8">                    
+                      <dx-text-box [value]="nomeCliente" readOnly="true"></dx-text-box>                    
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Nome do Projeto</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-box [value]="solicitacao.nomeProjeto" readOnly="true"></dx-text-box>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Centro de Custo/DO</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-box [value]="solicitacao.centroCusto" readOnly="true"></dx-text-box>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Owner/CC</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-box [value]="solicitacao.owner" readOnly="true"></dx-text-box>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Data de Lançamento</label>                  
+                  <div class="col-lg-3">
+                    <dx-text-box [value]="dataLancamento" readOnly="true"></dx-text-box>                    
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Urgente</label>                  
+                  <div class="col-lg-4">
+                    <div>
+                    <dx-radio-group readOnly="true"
+                    [items]="Urgencia"
+                    layout="horizontal" (onValueChanged)="onValueChanged($event)" [(value)]="defaultUrgencia">
+                    </dx-radio-group>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="isUrgente">
+                  <label  class="col-sm-4 col-form-label"></label>                  
+                  <div class="col-lg-8">
+                    <label class="TextoNegritoVermelho">Atenção, haverá cobrança adicional em função da urgência</label>                  
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Opções</label>                  
+                  <div class="col-lg-8">
+                    <div>
+                      <dx-check-box readOnly="true" [value]="solicitacao.laudos" (onValueChanged)="checkOpcoes_valueChanged($event)" text="Laudo"></dx-check-box>
+                      &nbsp;
+                      <dx-check-box readOnly="true" [value]="solicitacao.vistas" (onValueChanged)="checkOpcoes_valueChanged($event)" text="Pesquisa tributária"></dx-check-box>                          
+                    </div>                    
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="isLaudo">
+                  <label  class="col-sm-4 col-form-label">Tipo de Laudo</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-box [value]="solicitacao.nmTipoLaudo" readOnly="true"></dx-text-box>                    
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="showLaudoOriginal">
+                  <label  class="col-sm-4 col-form-label">Nº Laudo Original</label>                  
+                  <div class="col-lg-8">                    
+                    <dx-text-box [value]="solicitacao.numeroLaudoOriginal" readOnly="true"></dx-text-box>                           
+                  </div>                
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Comentário</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-area [height]="90" [value]="solicitacao.comentario" maxlength="500"  readOnly="true">                      
+                    </dx-text-area>
+                  </div>
+                </div>
+
+                <div class="form-group row" *ngIf="isUrgente">
+                  <label  class="col-sm-4 col-form-label">Justificativa Urgência</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-area [height]="90" [value]="solicitacao.comentarioUrgencia" maxlength="500"  readOnly="true">
+                    </dx-text-area>
+                  </div>
+                </div>
+
+                <div class="form-group row" *ngIf="isUrgente">
+                  <label  class="col-sm-4 col-form-label">Data Aprovação Urgência</label>                  
+                  <div class="col-lg-3">
+                    <dx-text-box [value]="dataAprovacaoUrgencia" readOnly="true"></dx-text-box>                    
+                  </div>
+                </div>
+
+              </div> 
+            </div>
+            <div class="row" *ngIf="isPesquisaTributaria">
+              <div class="col-lg-6">
+                <div class="form-group row">
+                  <label  class="col-sm-4 col-form-label">Malha logística entrada</label>                  
+                  <div class="col-lg-8">
+                    <dx-text-box [value]="solicitacao.nmMalhaLogistica" readOnly="true"></dx-text-box>                         
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <span *ngIf="MostraArquivoMalhaLogisticaEntrada">
+                  <i class="fa fa-file button-link" (click)="downloadMalhaLogistica(1)"></i><span (click)="downloadMalhaLogistica(1)" class="exemplo-link">{{solicitacao.uploadMalhaEspecificaFile}}</span>
+                </span>                                
+              </div>
+            </div>
+            <div class="row" *ngIf="isPesquisaTributaria">
+              <div class="col-lg-6">
+                <div class="form-group row" >
+                  <label  class="col-sm-4 col-form-label">Malha logística saída</label>
+                  <div class="col-lg-8">
+                    <dx-text-box [value]="solicitacao.nmMalhaLogisticaSaida" readOnly="true"></dx-text-box>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6" *ngIf="isMalhaEspecifica">                
+                  <span *ngIf="MostraArquivoMalhaLogisticaSaida">
+                    <i class="fa fa-file button-link" (click)="downloadMalhaLogistica(2)"></i><span (click)="downloadMalhaLogistica(2)" class="exemplo-link">{{solicitacao.uploadMalhaEspecificaFileSaida}}</span>
+                  </span>                                  
+              </div>
+              <div class="col-lg-6" *ngIf="isMalhaPadrao">                
+                  <div class="form-group row" >
+                    <label  class="col-sm-2 col-form-label">Padrão</label>
+                    <div class="col-lg-10">
+                      <dx-check-box readOnly="true" text="ICE" [value]="chkICE" (onValueChanged)="checkPadrao_valueChanged($event)"></dx-check-box>
+                      <br>
+                      <dx-check-box readOnly="true" text="HPC" [value]="chkHPC" (onValueChanged)="checkPadrao_valueChanged($event)"></dx-check-box>
+                      <br>
+                      <dx-check-box readOnly="true" text="FOOD" [value]="chkFOOD" (onValueChanged)="checkPadrao_valueChanged($event)"></dx-check-box>
+                      <br>
+                      <dx-check-box readOnly="true" text="NATURAIS" [value]="chkNATURAIS" (onValueChanged)="checkPadrao_valueChanged($event)"></dx-check-box>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>        
+          <div class="form-actions">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <Br>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Voltar" 
+                          class="btn btn-secondary" (click)="voltar()">
+                      </dx-button> 
+                  </div>
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+
+<div *ngIf="MostraGestaoItens">
+  <div class="row">
+    <div class="col-lg-12">
+        <div class="card-body">
+          <dx-data-grid [dataSource]="itens"
+                        height="600"
+                        showBorders="true"
+                        [rowAlternationEnabled]="true"                        
+                        (onCellPrepared)="onCellPrepared($event)"
+                        (onSelectionChanged)="onSelectionChanged($event)"
+                        noDataText="Nehum registro" keyExpr="idSolicitacaoItem"
+                        [(selectedRowKeys)]="selectedRows"
+                        >                                
+            <dxo-selection
+              selectAllMode="page"
+              showCheckBoxesMode="always"                      
+              mode="multiple"
+            ></dxo-selection>
+            <dxo-pager [showPageSizeSelector]="true"
+                       [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+            <dxo-paging [enabled]="true" [pageSize]="5"></dxo-paging>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+            <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="40" dataField="flAtivo" caption="" all></dxi-column>
+            <div *dxTemplate="let dt of 'cellTemplate'">            
+              <div style="white-space: nowrap;">
+                  <table width="40" align="center">
+                      <tr>
+                        <td><i class="fa fa-eye button-link" (click)="editarItem($event, dt)" title="Editar"></i></td>
+                      </tr>
+                    </table>
+              </div>
+            </div>
+            <dxi-column dataField="cdSku" caption="SKU" allowSorting="true" alignment="right"></dxi-column>
+            <dxi-column dataField="descricao" caption="Descrição" allowSorting="true"></dxi-column>
+            <dxi-column dataField="cdArteFOP" caption="Arte (FOP)" allowSorting="true" cellTemplate="ArteFOPTemplate" ></dxi-column>
+            <dxi-column dataField="cdArteBOP" caption="Arte (BOP)" allowSorting="true" cellTemplate="ArteBOPTemplate"></dxi-column>
+            <dxi-column dataField="testeLaboratorialFile" caption="Testes Laboratoriais" allowSorting="true" cellTemplate="TesteLabTemplate" alignment="center"></dxi-column>
+            <dxi-column dataField="anvisa" caption="Anvisa" allowSorting="true"></dxi-column>
+            <dxi-column caption="Outros" width="120" allowSorting="true" cellTemplate="OutrosTemplate" alignment="center"></dxi-column>
+            <dxi-column dataField="ncm" caption="NCM" allowSorting="true"  alignment="right"></dxi-column>
+            <dxi-column dataField="laudoItem" caption="Laudo" allowSorting="true" cellTemplate="laudoTemplate" alignment="center"></dxi-column>
+            <dxi-column dataField="pesquisaTribItem" caption="Pesquisa Tributária" allowSorting="true" cellTemplate="pesqTribTemplate" alignment="center"></dxi-column>
+            <div *dxTemplate="let d of 'ArteFOPTemplate'">
+              <span>{{d.data.cdArteFOP}}</span>
+              <span (click)="downloadArquivoItem(d.data.idSolicitacaoItem,2,d.data.arteBOPfile)" class="exemplo-link">{{d.data.arteFOPfile}}</span>
+              <span (click)="downloadArquivoItem(d.data.idSolicitacaoItem,2,d.data.arteBOPfile)" class="exemplo-link">{{d.data.cdArteFOP}}</span>
+            </div>
+            <div *dxTemplate="let d of 'ArteBOPTemplate'">
+              <span>{{d.data.cdArteBOP}}</span>
+              <span (click)="downloadArquivoItem(d.data.idSolicitacaoItem,2,d.data.arteBOPfile)" class="exemplo-link">{{d.data.arteBOPfile}}</span>
+              <span (click)="downloadArquivoItem(d.data.idSolicitacaoItem,2,d.data.arteBOPfile)" class="exemplo-link">{{d.data.cdArteBOP}}</span>
+            </div>
+            <div *dxTemplate="let d of 'TesteLabTemplate'">
+              <i class="fa fa-file button-link" (click)="downloadArquivoItem(d.data.idSolicitacaoItem,3,d.data.testeLaboratorialFile)"></i>              
+            </div>
+            <div *dxTemplate="let d of 'OutrosTemplate'">
+              <i class="fa fa-file button-link" (click)="downloadArquivoItem(d.data.idSolicitacaoItem,4,d.data.outrosFile)"></i>
+            </div>
+            <div *dxTemplate="let d of 'laudoTemplate'">
+              
+            </div>
+            <div *dxTemplate="let d of 'pesqTribTemplate'">
+              
+            </div>
+          </dx-data-grid>
+        </div>
+      </div>      
+  </div>
+</div>
+
+</div>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="200">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br><br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-popup
+          title="Erros gerados durante a importação"
+          [(visible)]="isPopupErrosImportacaoVisible" [maxHeight]="500" [maxWidth]="900">
+          <div class="centralizado">
+            <dx-data-grid [dataSource]="errosImportacao"
+                        height="300"
+                        showBorders="true"
+                        [rowAlternationEnabled]="true"
+                        [repaintChangesOnly]="true"
+                        noDataText="Nehum registro">
+            <dxo-export [enabled]="true"></dxo-export>
+            <dxo-pager [showPageSizeSelector]="false" ></dxo-pager>
+            <dxo-paging [enabled]="false"></dxo-paging>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-search-panel [visible]="false"></dxo-search-panel>                            
+            <dxi-column dataField="nrLinha" caption="Nº Linha" allowSorting="true"></dxi-column>
+            <dxi-column dataField="nrColuna" caption="Nº Coluna" allowSorting="true"></dxi-column>
+            <dxi-column dataField="nmColuna" caption="Coluna" allowSorting="true"></dxi-column>
+            <dxi-column dataField="dsErro" caption="Erro" allowSorting="true"></dxi-column>
+            </dx-data-grid>
+              <br>
+              <dx-button
+              text="Fechar"
+              (onClick)="fecharErros()" class="btn btn-warning">
+              </dx-button>
+        </div>
+</dx-popup>
+
+<dx-popup
+          title="Detalhes do SKU"
+          [(visible)]="isPopupDetalheItemVisible" [maxHeight]="500" [maxWidth]="900">                  
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group row">
+                <label  class="col-sm-4 col-form-label">SKU</label>                  
+                <div class="col-lg-8">                    
+                    <dx-text-box [value]="solicitacaoItem.cdSku" readOnly="true"></dx-text-box>                    
+                </div>
+              </div>
+              <div class="form-group row">
+                <label  class="col-sm-4 col-form-label">Descrição</label>                  
+                <div class="col-lg-8">      
+                  <dx-text-area [height]="90" [value]="solicitacaoItem.descricao" maxlength="500"  readOnly="true">
+                  </dx-text-area>                            
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="exibeArteFOP">
+                <label  class="col-sm-4 col-form-label">Arte (FOP)</label>                  
+                <div class="col-lg-8">      
+                  <span (click)="downloadArquivoItem(solicitacaoItem.idSolicitacaoItem,1,solicitacaoItem.arteFOPfile)" class="exemplo-link">{{solicitacaoItem.arteFOPfile}}</span>                            
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="exibeTestesLaboratoriais">
+                <label  class="col-sm-4 col-form-label">Testes laboratoriais</label>                  
+                <div class="col-lg-8">      
+                  <span (click)="downloadArquivoItem(solicitacaoItem.idSolicitacaoItem,3,solicitacaoItem.testeLaboratorialFile)" class="exemplo-link">{{solicitacaoItem.testeLaboratorialFile}}</span>                            
+                </div>
+              </div>
+              <div class="form-group row">
+                <label  class="col-sm-4 col-form-label">Opções</label>                  
+                <div class="col-lg-8">
+                  <div>
+                    <dx-check-box readOnly="true" [value]="solicitacaoItem.laudoItem" (onValueChanged)="checkOpcoes_valueChanged($event)" text="Laudo"></dx-check-box>
+                    &nbsp;
+                    <dx-check-box readOnly="true" [value]="solicitacaoItem.pesquisaTribItem" (onValueChanged)="checkOpcoes_valueChanged($event)" text="Pesquisa tributária"></dx-check-box>                          
+                  </div>                    
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group row">
+                <label  class="col-sm-4 col-form-label">Cód. Arte (FOP)</label>                  
+                <div class="col-lg-8">                    
+                    <dx-text-box [value]="solicitacaoItem.cdArteFOP" readOnly="true"></dx-text-box>                    
+                </div>
+              </div>
+              <div class="form-group row">
+                <label  class="col-sm-4 col-form-label">Cód. Arte (BOP)</label>                  
+                <div class="col-lg-8">                    
+                    <dx-text-box [value]="solicitacaoItem.cdArteBOP" readOnly="true"></dx-text-box>                    
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="exibeAnvisa">
+                <label  class="col-sm-4 col-form-label">Anvisa</label>                  
+                <div class="col-lg-8">                    
+                    <dx-text-box [value]="solicitacaoItem.anvisa" readOnly="true"></dx-text-box>                    
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="exibeArteBOP">
+                <label  class="col-sm-4 col-form-label">Arte (BOP)</label>                  
+                <div class="col-lg-8">      
+                  <span (click)="downloadArquivoItem(solicitacaoItem.idSolicitacaoItem,2,solicitacaoItem.arteFOPfile)" class="exemplo-link">{{solicitacaoItem.arteFOPfile}}</span>                            
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="exibeOutro">
+                <label  class="col-sm-4 col-form-label">Outros</label>                  
+                <div class="col-lg-8">      
+                  <span (click)="downloadArquivoItem(solicitacaoItem.idSolicitacaoItem,4,solicitacaoItem.outrosFile)" class="exemplo-link">{{solicitacaoItem.outrosFile}}</span>                            
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="exibeNcm">
+                <label  class="col-sm-4 col-form-label">NCM</label>                  
+                <div class="col-lg-8">                    
+                    <dx-text-box [value]="solicitacaoItem.ncm" readOnly="true"></dx-text-box>                    
+                </div>
+              </div>
+            </div>            
+          </div>
+        <div class="centralizado">
+          <br>
+          <dx-button 
+            id="button"
+            text="Voltar" 
+            class="btn btn-secondary" (click)="fecharDetalheItem()">
+          </dx-button> 
+        </div>
+      </dx-popup>
+
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

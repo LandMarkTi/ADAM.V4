@@ -1,0 +1,261 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Elaboração de resposta'" [icon]="'fa-edit'"></app-page-header>
+
+  
+<div class="row align-items-center" *ngIf="item">
+  <div class="col-lg-12">
+    <div class="card">        
+      <div class="card-body">        
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-12">
+                  <fieldset class="scheduler-border">
+                      <legend class="scheduler-border">Dados do Item</legend>
+                      <div class="control-group">
+                          <div class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Request</label></div>
+                            <div class="col-sm-2">
+                              <dx-text-box name="cdRequest" value="{{item.cdRequest}}" readOnly="true"></dx-text-box>
+                            </div>
+                            <div class="col-sm-1 text-align-right"><label class="col-form-label">SKU</label></div>
+                            <div class="col-sm-2">
+                              <dx-text-box name="nrSKU" value="{{item.nrSKU}}" readOnly="true"></dx-text-box>
+                            </div>
+                            <div class="col-sm-1 text-align-right"><label class="col-form-label">NCM</label></div>
+                            <div class="col-sm-2">
+                              <dx-text-box name="cdNCM" value="{{item.cdNCM}}" readOnly="true"></dx-text-box>
+                            </div>
+                          </div>
+                          <div *ngIf="item.dsCurta" class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Desc. Curta</label></div>
+                            <div class="col-sm-10">
+                              <dx-text-box name="cdRequest" value="{{item.dsCurta}}" readOnly="true"></dx-text-box>
+                            </div>                              
+                          </div>
+                          <div *ngIf="item.dsCompleta" class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Desc. Longa</label></div>
+                              <div class="col-sm-10">
+                                  <dx-text-area name="cdRequest" [height]="90" value="{{item.dsCompleta}}" readOnly="true">                                      
+                                  </dx-text-area>                                
+                              </div>                              
+                            </div>
+                          </div>
+                  </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <dx-button 
+                          id="button"
+                          text="Histórico mensagens" 
+                          (click)="abrirHistoricoMensagens()"
+                          class="btn btn-warning">
+                      </dx-button> 
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Arquivos"
+                          (click)="abrirFecharAnexos()"
+                          class="btn btn-warning">
+                      </dx-button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                  &nbsp;
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                  <fieldset class="scheduler-border">
+                      <legend class="scheduler-border">Mensagem do Elaborador</legend>
+                      <div class="control-group">
+                        <label class="col-form-label">{{mensagemElaborador.dsMensagemElaboracao}}</label>
+                      </div>
+                  </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                  &nbsp;
+              </div>
+            </div>
+            <form class="form-horizontal" (submit)="onFormSubmit($event)">
+            <div class="row">
+              <div class="col-lg-12">
+                  <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Sua resposta</legend>
+                    <div class="control-group">                      
+                      <dx-text-area [height]="180" name="dsPDM" [(value)]="resposta.DsMensagemElaboracao" maxlength="6000">
+                        <dx-validator>
+                          <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                        </dx-validator>
+                      </dx-text-area>
+                    </div>                    
+                  </fieldset>
+              </div>
+            </div> 
+            <div class="row">              
+              <div class="col-lg-12">
+                <dx-button 
+                id="button"
+                text="Salvar" 
+                [useSubmitBehavior]="true" class="btn btn-warning" [visible]="!somenteLeitura">
+                </dx-button>
+                &nbsp;&nbsp;
+                <dx-button 
+                id="button"
+                text="Cancelar" 
+                class="btn btn-secondary" (click)="voltar()">
+                </dx-button> 
+              </div>
+            </div>                                  
+          </form>
+          </div>        
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+
+</div>
+
+<dx-popup
+    title="Histórico de mensagens"
+    [(visible)]="isPopupHistoricoVisible">
+    <div class="centralizado" style="overflow-y:scroll;height: 100%;">
+            <dx-data-grid #gridMensagens id="gridContainer"
+            [dataSource]="historicoMensagens"
+            [rowAlternationEnabled]="true"
+            [masterDetail]="{ enabled: true, template: 'detail' }"
+            noDataText="Nehum registro"
+            [showBorders]="true" (onCellPrepared)="contentReady($event)">
+
+            <dxi-column dataField="nmOrigemMensagem" caption="Origem"></dxi-column>
+            <dxi-column dataField="dtCriacao" caption="Data" [calculateCellValue]="dataFormatada" [sortIndex]="0" sortOrder="desc"></dxi-column>
+            <dxi-column dataField="nmUsuario" caption="Usuário"></dxi-column>
+        
+            <div *dxTemplate="let mensagemItem of 'detail'">
+                <div class="master-detail-caption">{{mensagemItem.data.dsMensagemElaboracao}}</div>
+            </div>
+        </dx-data-grid>
+        <Br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharHistoricoSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisibleUpload" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgSucesso">Upload realizado com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucessoUpload()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="500">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Arquivos anexos"
+    [(visible)]="isPopupVisibleArquivosAnexos">
+    <div class="row">
+      <div class="col-lg-12">
+        <fieldset class="scheduler-border">
+          <legend class="scheduler-border">Upload de arquivos</legend>
+          <div class="control-group">                      
+            <br>
+            <table>
+              <tr>
+                <Td width="300"><dx-text-box name="filePath" value="{{filePath}}" readOnly="true"></dx-text-box></Td>
+                <Td><label for="arquivo" *ngIf="!btnUploadNaoVisivel" class="btn btn-warning bottom-zero margin-left-10">Selecione o arquivo</label></Td>
+                <Td>
+                  <button class="btn btn-success margin-left-10" (click)="onUpload($event)" *ngIf="btnUploadNaoVisivel">Fazer upload</button>                                
+                  <button class="btn btn-danger margin-left-10" (click)="onCancelUpload()" *ngIf="btnUploadNaoVisivel">Cancelar upload</button>
+                </Td>
+              </tr>
+            </table>
+            <input type="hidden" name="idItem" value="{{item.idItem}}">
+            <input #myInput type="file" id="arquivo" style="display:none" (change)="fileProgress($event)" />
+          </div>                    
+        </fieldset>        
+      
+      </div>
+    </div>     
+    <div class="row">
+        <div class="col-lg-12">
+          <dx-data-grid [dataSource]="anexosItem"
+                    showBorders="true"
+                    [rowAlternationEnabled]="true"
+                    [repaintChangesOnly]="true"
+                    noDataText="Nehum registro">
+          <dxo-pager [showPageSizeSelector]="true"
+                  [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+          <dxo-paging [enabled]="true" [pageSize]="5"></dxo-paging>
+          <dxo-header-filter [visible]="true"></dxo-header-filter>
+          <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+          <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="100" caption="" all></dxi-column>
+          <div *dxTemplate="let dt of 'cellTemplate'">            
+          <div style="white-space: nowrap;">
+              <table width="24" align="center">
+                  <tr>
+                    <td><i class="fa fa-download button-link" (click)="download($event, dt)" title="Download"></i></td>
+                  </tr>
+                </table>
+          </div>
+          </div>
+          <dxi-column dataField="nmAnexoItem" caption="Nome" allowSorting="true" [calculateCellValue]="descricaoNome"></dxi-column>
+          </dx-data-grid>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <Br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Fechar" 
+                (click)="abrirFecharAnexos()" class="btn btn-warning">
+            </dx-button> 
+        </div>
+    </div>    
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

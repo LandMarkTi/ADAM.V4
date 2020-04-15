@@ -1,0 +1,154 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Cadastro de Usuário'" [icon]="'fa-edit'"></app-page-header>
+
+  
+<div class="row" *ngIf="usuario">
+  <div class="col-lg-12">
+    <div class="card">        
+      <div class="card-body">
+        <form class="form-horizontal" (submit)="onFormSubmit($event)">
+          <input type="hidden" name="hdnIdUsuario" value="{{usuario.idUsuario}}">
+          <input type="hidden" name="hdnIdCliente" value="{{usuario.idUsuario}}">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-8">
+                <label class="col-form-label" for="appendedInput">Nome</label>
+                <div class="controls">
+                    <dx-text-box name="nmUsuario" [(value)]="usuario.nmUsuario" [maxLength]="200">
+                      <dx-validator>
+                          <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                          <dxi-validation-rule type="stringLength" [min]="3" message="Informe no mínimo 3 caracteres."></dxi-validation-rule>
+                      </dx-validator>
+                    </dx-text-box>
+                </div>
+              </div> 
+            </div>
+            <div class="row">
+              <div class="col-lg-8">
+                  <label class="col-form-label" for="appendedInput">Email</label>
+                  <div class="controls">
+                      <dx-text-box name="dsEmail" [(value)]="usuario.dsEmail" maxlength="3" maxlength="300">
+                          <dx-validator>
+                              <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                              <dxi-validation-rule type="email" message="E-mail inválido"></dxi-validation-rule>
+                          </dx-validator>
+                      </dx-text-box>
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2">
+                <label class="col-form-label" for="appendedInput">Senha</label>
+                <div class="controls">
+                    <dx-text-box name="senha" mode="password" [(value)]="usuario.dsPassword" maxlength="10">                      
+                    </dx-text-box>                                          
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-lg-2">
+                <label class="col-form-label" for="appendedInput">Redigite a senha</label>
+                <div class="controls">
+                    <dx-text-box name="senha2" value="{{senhaVerificacao}}" mode="password" maxlength="10">
+                        <dxi-validation-rule type="custom" [validationCallback]="passwordsIguais" message="As senhas não conferem"></dxi-validation-rule>
+                    </dx-text-box>                      
+                </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-lg-2">
+                <label class="col-form-label" for="appendedInput">Perfil</label>
+                <div class="controls">
+                  <dx-select-box
+                      placeholder="Selecione..."
+                      [dataSource]="perfis"
+                      [(value)]="idPerfilAcesso"
+                      valueExpr="idPerfilAcesso"
+                      displayExpr="nmPerfilAcesso"
+                      (onValueChanged)="onValueChanged($event)">
+                      <dx-validator>
+                          <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                      
+                      </dx-validator>
+                  </dx-select-box>
+                </div>
+              </div>
+            </div>
+          <div class="row" *ngIf="isClienteVisible">
+              <div class="col-lg-4">
+                <label class="col-form-label" for="appendedInput">Cliente</label>
+                <div class="controls">
+                    <dx-select-box
+                      placeholder="Selecione..."
+                      [dataSource]="clientes"
+                      [(value)]="idCliente"
+                      valueExpr="idCliente"
+                      displayExpr="nmCliente" noDataText="">
+                      <dx-validator>                   
+                          <dxi-validation-rule type="required"  message="Campo obrigatório"></dxi-validation-rule>
+                      </dx-validator>
+                  </dx-select-box>
+                </div>
+              </div>              
+            </div>         
+          <div class="form-actions">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <Br>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <dx-button 
+                          id="button"
+                          text="Salvar" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                      </dx-button> 
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Cancelar" 
+                          class="btn btn-secondary" (click)="voltar()">
+                      </dx-button> 
+                  </div>
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+
+</div>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="200">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br><br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

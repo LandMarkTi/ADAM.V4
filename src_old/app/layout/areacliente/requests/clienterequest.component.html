@@ -1,0 +1,98 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Cadastro de Request'" [icon]="'fa-edit'"></app-page-header>
+
+  
+<div class="row" *ngIf="request">
+  <div class="col-lg-12">
+    <div class="card">        
+      <div class="card-body">
+        <form class="form-horizontal" (submit)="onFormSubmit($event)">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-4">
+                <label class="col-form-label" for="appendedInput">Status</label>
+                <div class="controls">
+                    <dx-text-box name="dsStatusRequest" [(value)]="request.dsStatusRequest" readOnly="true"></dx-text-box>
+                </div>
+              </div> 
+              <div class="col-lg-4">
+                <label class="col-form-label" for="appendedInput">Cód. Request</label>
+                <div class="controls">
+                    <dx-text-box name="cdRequest" [(value)]="request.cdRequest" readOnly="true"></dx-text-box>
+                </div>
+              </div>              
+            </div>
+            <div class="row">
+              <div class="col-lg-8">
+                  <label class="col-form-label" for="appendedInput">Nome</label>
+                  <div class="controls">
+                      <dx-text-box name="nmRequest" [(value)]="request.nmRequest" maxlength="300">
+                          <dx-validator>
+                              <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>
+                          </dx-validator>
+                      </dx-text-box>
+                  </div>
+              </div>          
+            </div>          
+          </div>        
+          <div class="form-actions">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <Br>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <dx-button 
+                          id="button"
+                          text="Salvar" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                      </dx-button> 
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Cancelar" 
+                          class="btn btn-secondary" (click)="voltar()">
+                      </dx-button> 
+                  </div>
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+
+</div>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="200">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br><br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

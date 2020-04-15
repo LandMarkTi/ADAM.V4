@@ -1,0 +1,78 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+    <div class="list-group" *ngIf="isInternalUser">
+        <div class="nested-menu" *ngIf="isAdministrator">
+                <a class="list-group-item" (click)="addExpandClass('pages')">
+                    <i class="fa fa-fw fa-wrench"></i>&nbsp;
+                    <span>{{ 'Cadastros' | translate }}</span>
+                </a>
+                <li class="nested" [class.expand]="showMenu === 'pages'">
+                    <ul class="submenu">
+                        <li>
+                            <a href="javascript:void(0)" [routerLink]="['/listaclientes']" [routerLinkActive]="['router-link-active']">
+                                <i class="fa fa-address-card"></i>&nbsp;
+                                <span>{{ 'Clientes' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" [routerLink]="['/listausuarios']" [routerLinkActive]="['router-link-active']">
+                                <i class="fa fa-fw fa-user"></i>&nbsp;
+                                <span>{{ 'Usuários' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" [routerLink]="['/listancm']" [routerLinkActive]="['router-link-active']">
+                                <i class="fa fa-folder"></i>&nbsp;
+                                <span>{{ 'NCM' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" [routerLink]="['/listanve']" [routerLinkActive]="['router-link-active']">
+                                <i class="fa fa-folder"></i>&nbsp;
+                                <span>{{ 'NVE' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" [routerLink]="['/listanesh']" [routerLinkActive]="['router-link-active']">
+                                <i class="fa fa-folder"></i>&nbsp;
+                                <span>{{ 'NESH' | translate }}</span>
+                            </a>
+                        </li>
+                        <li>
+                                <a href="javascript:void(0)" [routerLink]="['/listtratadm']" [routerLinkActive]="['router-link-active']">
+                                    <i class="fa fa-folder"></i>&nbsp;
+                                    <span>{{ 'Trat. Administrativo' | translate }}</span>
+                                </a>
+                            </li>
+                        <li>
+                            <a href="javascript:void(0)" [routerLink]="['/listexTarif']" [routerLinkActive]="['router-link-active']">
+                                <i class="fa fa-folder"></i>&nbsp;
+                                    <span>{{ 'EX Tarifário' | translate }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </div>
+        <a [routerLink]="['/requests']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-folder-open"></i>&nbsp;
+            <span>{{ 'Requests' | translate }}</span>
+        </a>
+        <a [routerLink]="['/visaogerencial']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-eye"></i>&nbsp;
+            <span>{{ 'Visão Gerencial' | translate }}</span>
+        </a>
+        <a [routerLink]="['/listasolicitacao']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-list"></i>&nbsp;
+            <span>{{ 'Solicitações' | translate }}</span>
+        </a>        
+    </div>
+    <div class="list-group" *ngIf="!isInternalUser">        
+        <a [routerLink]="['/clienterequests']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-folder-open"></i>&nbsp;
+            <span>{{ 'Requests' | translate }}</span>
+        </a>
+        <a [routerLink]="['/clientelistapendencias']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <i class="fa fa-eye"></i>&nbsp;
+            <span>{{ 'Pendências' | translate }}</span>
+        </a>        
+    </div>
+</nav>

@@ -1,0 +1,587 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="acaoElabRev" [icon]="'fa-edit'"></app-page-header>
+
+<div class="row" *ngIf="elaboracao">
+  <div class="col-lg-12">
+    <div class="card">        
+      <div class="card-body">
+        <form class="form-horizontal" (submit)="onFormSubmit($event)">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-12">
+                  <fieldset class="scheduler-border">
+                      <legend class="scheduler-border">Dados do Item</legend>
+                      <div class="control-group">
+                          <div class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Request</label></div>
+                            <div class="col-sm-2">
+                              <dx-text-box name="cdRequest" value="{{elaboracao.cdRequest}}" readOnly="true"></dx-text-box>
+                            </div>
+                            <div class="col-sm-1 text-align-right"><label class="col-form-label">SKU</label></div>
+                            <div class="col-sm-2">
+                              <dx-text-box name="nrSKU" value="{{elaboracao.nrSKU}}" readOnly="true"></dx-text-box>
+                            </div>
+                            <div class="col-sm-1 text-align-right"><label class="col-form-label">NCM</label></div>
+                            <div class="col-sm-2">
+                              <dx-text-box name="cdNCM" value="{{elaboracao.cdNCM}}" readOnly="true"></dx-text-box>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Desc. Curta</label></div>
+                            <div class="col-sm-10">
+                              <dx-text-box name="cdRequest" value="{{elaboracao.dsCurta}}" readOnly="true"></dx-text-box>
+                            </div>                              
+                          </div>
+                          <div class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Desc. Longa</label></div>
+                              <div class="col-sm-10">
+                                  <dx-text-area name="cdRequest" [height]="90" value="{{elaboracao.dsCompleta}}" readOnly="true">                                      
+                                  </dx-text-area>                                
+                              </div>                              
+                            </div>
+                          </div>
+                  </fieldset>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Escopo de Análise</legend>
+                        <div class="control-group">
+                          <div #controle_erro_pdm>
+                          <div class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">PDM</label></div>
+                            <div class="col-sm-10">
+                              <dx-text-area [height]="90" name="dsPDM" [(value)]="elaboracao.dsPDM" maxlength="500" [readOnly]="isReadOnly">
+                              </dx-text-area>
+                            </div>                                
+                          </div>
+                          </div>
+                          <div class="divCampoObrigatorio" *ngIf="PdmObrigatorio">Campo obrigatório</div>
+                          <div class="row">
+                              <div class="col-sm-2">
+                                <Br>
+                            </div>                                
+                          </div>
+                          <div class="row" *ngIf="utuilizaEscopoNVE">
+                            <div class="col-sm-2 text-align-center">
+                              <dx-button
+                                text="NVE" *ngIf="!isReadOnly"
+                                (onClick)="abreSelecaoNVE()" class="btn btn-warning btn-fino">
+                              </dx-button>
+                            </div>
+                            <div class="row">
+                              <div class="col-sm-2">
+                                <Br>
+                              </div>                                
+                            </div>
+                            <div class="col-sm-10">
+                              <dx-data-grid [dataSource]="listaNve"
+                                height="400"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                noDataText="Nehum registro">
+                                <dxo-pager [showPageSizeSelector]="true"
+                                          [allowedPageSizes]="[20, 50, 100]"></dxo-pager>
+                                <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                                <dxo-search-panel [visible]="false" placeholder="Busca..."></dxo-search-panel>                                
+                                <dxi-column dataField="dsNivel" caption="Nível" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsAtributo" caption="Atributo" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsEspecificacao" caption="Especificação" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="idNCM" caption="Status" [calculateCellValue]="statusTexto" [width]="70"></dxi-column>
+                              </dx-data-grid>                              
+                            </div>                                
+                          </div>
+                          <div class="row" *ngIf="utuilizaEscopoExTarifario">
+                              <div class="col-sm-2">
+                                <Br>
+                            </div>                                
+                          </div>
+                          <div class="row" *ngIf="utuilizaEscopoExTarifario">
+                            <div class="col-sm-2 text-align-center">
+                              <dx-button *ngIf="!isReadOnly"
+                                text="Ex Tarif."
+                                (onClick)="abreSelecaoExTarif()" class="btn btn-warning btn-fino">
+                              </dx-button>
+                            </div>
+                            <div class="col-sm-10">
+                              <dx-data-grid [dataSource]="listaExTarif"
+                                height="400"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                noDataText="Nehum registro">
+                                <dxo-pager [showPageSizeSelector]="true"
+                                          [allowedPageSizes]="[20, 50, 100]"></dxo-pager>
+                                <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                                <dxo-search-panel [visible]="false" placeholder="Busca..."></dxo-search-panel>
+                                <dxi-column dataField="dsTipo" caption="Tipo" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="cdEx" caption="Cód. EX" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsDescricao" caption="Descriçãop" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="idNCM" caption="Status" [calculateCellValue]="statusTexto" [width]="70"></dxi-column>
+                              </dx-data-grid>
+                            </div>                                
+                          </div>
+                          <div class="row" *ngIf="utuilizaEscopoTratamentoAdministrativo">
+                            <div class="col-sm-2">
+                              <Br>
+                            </div>                                
+                          </div>
+                          <div class="row" *ngIf="utuilizaEscopoTratamentoAdministrativo">
+                            <div class="col-sm-2 text-align-center">
+                              <dx-button  *ngIf="!isReadOnly"
+                                text="Trat. Adm."
+                                (onClick)="abreSelecaoTratAdm()" class="btn btn-warning btn-fino">
+                              </dx-button>
+                            </div>
+                            <div class="col-sm-10">
+                              <dx-data-grid [dataSource]="listaTratAdm"
+                                height="400"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                noDataText="Nehum registro">
+                                <dxo-pager [showPageSizeSelector]="true"
+                                          [allowedPageSizes]="[20, 50, 100]"></dxo-pager>
+                                <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                                <dxo-header-filter [visible]="true"></dxo-header-filter>
+                                <dxo-search-panel [visible]="false" placeholder="Busca..."></dxo-search-panel>                                
+                                <dxi-column dataField="dsTipo" caption="Tipo" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsOrgao" caption="Orgão" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsFinalidade" caption="Finalidade" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsTratamento" caption="Tratamento" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsDestaque" caption="Dest" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="dsDsDescDestaque" caption="Destaque" allowSorting="true"></dxi-column>
+                                <dxi-column dataField="idNCM" caption="Status" [calculateCellValue]="statusTexto" [width]="70"></dxi-column>
+                              </dx-data-grid>
+                            </div>                                
+                          </div>
+                        </div>
+                    </fieldset>
+                </div>
+            
+            </div>          
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Informações de apoio</legend>
+                        <div class="control-group">
+                            <div class="row">
+                              <div class="col-sm-12">
+                                  <dx-button 
+                                      id="button"
+                                      text="Legislação" 
+                                      (click)="abrirFecharLegislacao()" class="btn btn-warning">
+                                  </dx-button> 
+                                  &nbsp;&nbsp;
+                                  <dx-button 
+                                      id="button"
+                                      text="Anexos" 
+                                      (click)="abrirFecharAnexos()" class="btn btn-warning">
+                                  </dx-button> 
+                                  &nbsp;&nbsp;
+                                  <dx-button 
+                                      id="button"
+                                      text="Mensagens" 
+                                      (click)="abrirFecharMensagens()" class="btn btn-warning">
+                                  </dx-button> 
+                              </div>                      
+                            </div>
+                          </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <Br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Andamento</legend>
+                        <div class="control-group">
+                          <div class="row">
+                            <div class="col-sm-2 text-align-right"><label class="col-form-label">Status Atual:</label></div>
+                            <div class="col-sm-2">
+                                <dx-text-box name="DsStatusAtualItem" value="{{elaboracao.dsStatusItem}}" readOnly="true"></dx-text-box>
+                            </div>
+                            <div class="col-sm-1 text-align-right" *ngIf="habilitaMudancaStatus"><label class="col-form-label">Novo Status</label></div>
+                            <div class="col-sm-2" *ngIf="habilitaMudancaStatus">
+                                  <dx-select-box
+                                  placeholder="Selecione..."
+                                  [dataSource]="status"
+                                  [(value)]="idStatusItem"
+                                  valueExpr="idStatusItem"
+                                  displayExpr="dsStatusItem" noDataText="" [readOnly]="statusEnabled" (onValueChanged)="onValueChanged($event)">
+                                  <dx-validator>                   
+                                      <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>
+                                  </dx-validator>
+                              </dx-select-box>
+                            </div>                             
+                          </div>
+                          <div class="row">
+                              <div class="col-lg-12">
+                                  <Br>
+                              </div>
+                          </div>
+                          <div class="row" *ngIf="isMensagemVisible">
+                              <div class="col-sm-2 text-align-right"><label class="col-form-label">Mensagem</label></div>
+                              <div class="col-sm-10">
+                                <dx-text-area [height]="90" name="dsMensagem" [(value)]="elaboracao.dsMensagem" maxlength="500">
+                                  <dx-validator>
+                                    <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                                  </dx-validator>
+                                </dx-text-area>
+                              </div>                                
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+          </div>
+          <div class="form-actions">
+            <div class="row">
+                  <div class="col-lg-12">
+                      <Br>
+                  </div>
+            </div>
+            <div class="row">
+                  <div class="col-lg-12">
+                      <dx-button *ngIf="habilitaMudancaStatus"
+                          id="button"
+                          text="Salvar" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                      </dx-button> 
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Cancelar" 
+                          class="btn btn-secondary" (click)="voltar()">
+                      </dx-button> 
+                  </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+</div>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="500">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Seleção de NVE"
+    [(visible)]="isPopupVisibleSelecaoNVE">
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-data-grid [dataSource]="NveSelecionaveis"
+                                height="400"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                noDataText="Nehum registro"
+                                keyExpr="idNVE"
+                                [(selectedRowKeys)]="NveSelectedRows"
+                                >                                
+                    <dxo-selection
+                      selectAllMode="page"
+                      showCheckBoxesMode="always"                      
+                      mode="multiple"
+                    ></dxo-selection>
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[20, 100, 200]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>                    
+                    <dxi-column dataField="dsNivel" caption="Nível" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsAtributo" caption="Atributo" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsEspecificacao" caption="Especificação" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="idNCM" caption="Status" [calculateCellValue]="statusTexto" [width]="70"></dxi-column>
+                  </dx-data-grid>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <Br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Salvar" 
+                (click)="selecionarNVEs()" class="btn btn-warning">
+            </dx-button> 
+            &nbsp;&nbsp;
+            <dx-button 
+                id="button"
+                text="Cancelar" 
+                class="btn btn-secondary" (click)="cancelarSelecaoNVes()">
+            </dx-button> 
+        </div>
+    </div>    
+</dx-popup>
+
+<dx-popup
+    title="Seleção de Ex Tarif"
+    [(visible)]="isPopupVisibleSelecaoExTarif">
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-data-grid [dataSource]="ExTarifSelecionaveis"
+                                height="400"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                noDataText="Nehum registro"
+                                keyExpr="idExTarif"
+                                [(selectedRowKeys)]="ExTarifSelectedRows"
+                                >                                
+                    <dxo-selection
+                      selectAllMode="page"
+                      showCheckBoxesMode="always"                      
+                      mode="multiple"
+                    ></dxo-selection>
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[20, 100, 200]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>                    
+                    <dxi-column dataField="dsTipo" caption="Tipo" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="cdEx" caption="Cód. EX" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsDescricao" caption="Descriçãop" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="idNCM" caption="Status" [calculateCellValue]="statusTexto" [width]="70"></dxi-column>
+                  </dx-data-grid>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <Br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Salvar" 
+                (click)="selecionarExTarifs()" class="btn btn-warning">
+            </dx-button> 
+            &nbsp;&nbsp;
+            <dx-button 
+                id="button"
+                text="Cancelar" 
+                class="btn btn-secondary" (click)="cancelarSelecaoExTarifs()">
+            </dx-button> 
+        </div>
+    </div>    
+</dx-popup>
+
+<dx-popup
+    title="Seleção de Tratatamento Administrativo"
+    [(visible)]="isPopupVisibleSelecaoTratAdm">
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-data-grid [dataSource]="TratAdmSelecionaveis"
+                                height="400"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                noDataText="Nehum registro"
+                                keyExpr="idTratamentoAdministrativo"
+                                [(selectedRowKeys)]="TratAdmSelectedRows"
+                                >                                
+                    <dxo-selection
+                      selectAllMode="page"
+                      showCheckBoxesMode="always"                      
+                      mode="multiple"
+                    ></dxo-selection>
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[20, 100, 200]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>                    
+                    <dxi-column dataField="dsTipo" caption="Tipo" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsOrgao" caption="Orgão" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsFinalidade" caption="Finalidade" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsTratamento" caption="Tratamento" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsDestaque" caption="Dest" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsDsDescDestaque" caption="Destaque" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="idNCM" caption="Status" [calculateCellValue]="statusTexto" [width]="70"></dxi-column>
+                  </dx-data-grid>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <Br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Salvar" 
+                (click)="selecionarTratAdms()" class="btn btn-warning">
+            </dx-button> 
+            &nbsp;&nbsp;
+            <dx-button 
+                id="button"
+                text="Cancelar" 
+                class="btn btn-secondary" (click)="cancelarSelecaoTratAdms()">
+            </dx-button> 
+        </div>
+    </div>    
+</dx-popup>
+
+<dx-popup
+    title="Legislação"
+    [(visible)]="isPopupVisibleLegislacao" height="500" >
+    <div class="row" >
+        <div class="col-lg-12">          
+          <label class="col-form-label" for="appendedInput">Base TEC</label>
+            <div class="controls">
+              <dx-text-area [height]="90" name="dsBaseTEC" [(value)]="elaboracao.dsHNCM" readOnly="true"></dx-text-area>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <Br>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">          
+          <label class="col-form-label" for="appendedInput">Base NESH</label>
+            <div class="controls">
+              <dx-text-area [height]="90" name="dsBaseNESH" [(value)]="legislacao.dsNesh" readOnly="true"></dx-text-area>
+            </div>
+        </div>
+  </div>
+  <div class="row">
+      <div class="col-lg-12">
+          <Br>
+      </div>
+  </div>
+    <div class="row">
+        <div class="col-lg-12">
+            &nbsp;&nbsp;
+            <dx-button 
+                id="button"
+                text="Fechar" 
+                class="btn btn-secondary" (click)="abrirFecharLegislacao()">
+            </dx-button> 
+        </div>
+    </div>    
+</dx-popup>
+
+<dx-popup
+    title="Arquivos anexos"
+    [(visible)]="isPopupVisibleAnexos">
+    <div class="row">
+        <div class="col-lg-12">
+          <dx-data-grid [dataSource]="anexosItem"                   
+                    showBorders="true"
+                    [rowAlternationEnabled]="true"
+                    [repaintChangesOnly]="true"
+                    noDataText="Nehum registro">
+          <dxo-pager [showPageSizeSelector]="true"
+                  [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+          <dxo-paging [enabled]="true" [pageSize]="5"></dxo-paging>
+          <dxo-header-filter [visible]="true"></dxo-header-filter>
+          <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+          <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="100" caption="" all></dxi-column>
+          <div *dxTemplate="let dt of 'cellTemplate'">            
+          <div style="white-space: nowrap;">
+              <table width="24" align="center">
+                  <tr>
+                    <td><i class="fa fa-download button-link" (click)="download($event, dt)" title="Download"></i></td>
+                  </tr>
+                </table>
+          </div>
+          </div>
+          <dxi-column dataField="nmAnexoItem" caption="Nome" allowSorting="true" [calculateCellValue]="descricaoNome"></dxi-column>
+          </dx-data-grid>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <Br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Fechar" 
+                (click)="abrirFecharAnexos()" class="btn btn-secondary">
+            </dx-button> 
+        </div>
+    </div>    
+</dx-popup>
+
+
+<dx-popup
+    title="Mensagens"
+    [(visible)]="isPopupVisibleMensagens">    
+    <div class="row" style="overflow-y:scroll;height: 100%;">
+        <div class="col-lg-12">
+          <dx-data-grid id="gridContainer"
+            [dataSource]="mensagens"
+            [rowAlternationEnabled]="true"
+            [masterDetail]="{ enabled: true, template: 'detail' }"
+            (onCellPrepared)="onCellPrepared($event)"
+            noDataText="Nehum registro"
+            [showBorders]="true">
+            <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+            <dxo-paging [enabled]="true" [pageSize]="5"></dxo-paging>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+            <dxi-column dataField="nmOrigemMensagem" caption="Origem"></dxi-column>
+            <dxi-column dataField="dtCriacao" [sortIndex]="0" sortOrder="desc" caption="Data" [calculateCellValue]="dataFormatada"></dxi-column>
+            <dxi-column dataField="nmUsuario" caption="Usuário"></dxi-column>        
+            <div *dxTemplate="let mensagemItem of 'detail'">
+                <div class="master-detail-caption">{{mensagemItem.data.dsMensagemElaboracao}}</div>
+            </div>
+        </dx-data-grid>    
+            <Br>
+            <dx-button 
+                id="button"
+                text="Fechar" 
+                (click)="abrirFecharMensagens()" class="btn btn-secondary">
+            </dx-button> 
+          </div>
+    </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

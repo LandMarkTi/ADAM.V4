@@ -1,0 +1,44 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'Lista de Pendências de Resposta'" [icon]="'fa-edit'"></app-page-header>
+
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="card-body">
+                  <dx-data-grid [dataSource]="mensagenspendentes"
+                                height="600"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                (onCellPrepared)="onCellPrepared($event)"
+                                noDataText="Nehum registro">
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="5"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+                    <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="100" dataField="flAtivo" caption="" all></dxi-column>
+                    <div *dxTemplate="let dt of 'cellTemplate'">            
+                      <div style="white-space: nowrap;">
+                          <table width="30" align="center">
+                              <tr>
+                                <td><i class="fa fa-pencil button-link" (click)="responder($event, dt)" title="Responder"></i></td>                                
+                              </tr>
+                            </table>
+                      </div>
+                    </div>
+                    <dxi-column dataField="cdRequest" caption="Cód. Request"></dxi-column>                    
+                    <dxi-column dataField="nrSKU" caption="SKU" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="cdNCM" caption="NCM" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dtCriacaoMensagem" [sortIndex]="0" sortOrder="desc" caption="Data" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsMensagemElaboracao" caption="Mensagem" allowSorting="true"></dxi-column>
+                  </dx-data-grid>
+                </div>
+              </div>      
+    </div>
+</div>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

@@ -1,0 +1,269 @@
+<div [@routerTransition] *ngIf="isInternalUser">
+    <app-page-header [heading]="'Visão Gerencial'" [icon]="'fa-edit'"></app-page-header>
+
+    <form class="form-horizontal">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-6">
+                  <div class="row">
+                    <div class="col-sm-2"><label class="col-form-label">Cliente</label></div>
+                    <div class="col-sm-10">
+                      <dx-select-box placeholder="Selecione..."
+                      [dataSource]="clientes"
+                      [(value)]="idCliente"
+                      valueExpr="idCliente"
+                      displayExpr="nmCliente"
+                      [showClearButton]="true"
+                      >
+                      </dx-select-box>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row">
+                      <div class="col-sm-2"><label class="col-form-label">Usuário</label></div>
+                      <div class="col-sm-10">
+                          <dx-select-box placeholder="Selecione..."
+                          [dataSource]="usuarios"
+                          [(value)]="idUsuarioDdl"
+                          valueExpr="idUsuario"
+                          displayExpr="nmUsuario"
+                          [showClearButton]="true"
+                          >
+                        </dx-select-box>
+                      </div>
+                    </div>
+                  </div>     
+              </div>
+              <div class="row align-items-center">
+                <div class="col-lg-3">
+                  <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Prioridade</legend>
+                    <div class="control-group">
+                      <dx-check-box [(value)]="chkPrioridadeAmarelo"></dx-check-box> <img src="/assets/images/indicadorAMARELO.png" width="20" />
+                      &nbsp;
+                      <dx-check-box [(value)]="chkPrioridadeVerde"></dx-check-box> <img src="/assets/images/indicadorVERDE.png" width="20" />
+                      &nbsp;
+                      <dx-check-box [(value)]="chkPrioridadeVermelho"></dx-check-box> <img src="/assets/images/indicadorVERMELHO.png" width="20" />
+                      &nbsp;
+                      <dx-check-box [(value)]="chkPrioridadeAzul"></dx-check-box><img src="/assets/images/indicadorAZUL.png" width="20" />
+                    </div>
+                  </fieldset>
+              </div>
+              <div class="col-lg-7">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Andamento</legend>
+                    <div class="control-group">
+                      <dx-check-box [(value)]="chkStatusItemInicial" (onValueChanged)="checkStatus_valueChanged($event)" text="Inicial"></dx-check-box>
+                      &nbsp;
+                      <dx-check-box [(value)]="chkStatusItemElaboracao" (onValueChanged)="checkStatus_valueChanged($event)" text="Elaboração"></dx-check-box> 
+                      &nbsp;
+                      <dx-check-box [(value)]="chkStatusItemPendenteCliente" (onValueChanged)="checkStatus_valueChanged($event)" text="Pendente com Cliente"></dx-check-box>
+                      &nbsp;
+                      <dx-check-box [(value)]="chkStatusItemRevisao" (onValueChanged)="checkStatus_valueChanged($event)" text="Revisão"></dx-check-box>
+                      &nbsp;
+                      <dx-check-box [(value)]="chkStatusItemFinalizado" (onValueChanged)="checkStatus_valueChanged($event)" text="Finalizado"></dx-check-box>
+                      &nbsp;
+                      <dx-check-box id='checkTodos' [(value)]="chkStatusTodos"text="Todos" (onValueChanged)="checkTodos_valueChanged($event)"></dx-check-box>
+                    </div>
+                </fieldset>          
+            </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-lg-3">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Status</legend>
+                        <div class="control-group">
+                            <dx-check-box [(value)]="chkAtivos" text="Ativos"></dx-check-box> 
+                            &nbsp;
+                            <dx-check-box [(value)]="chkInativos" text="Inativos"></dx-check-box> 
+                        </div>
+                    </fieldset>
+                </div>                
+                <div class="col-lg-2 padding-30">                  
+                    <dx-button id="button" text="Buscar" class="btn btn-warning" (click)="carregaLista()">
+                    </dx-button>
+                  </div>
+              </div>
+        </div>        
+    </div>  
+  </form>  
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="card-body">
+                  <dx-data-grid #gridVisaoGerencial
+                                [dataSource]="itens"
+                                height="500"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                (onCellPrepared)="onCellPrepared($event)"
+                                (onContentReady)="onContentReady($event)"
+                                noDataText="Nehum registro"
+                                keyExpr="idItem"
+                                [(selectedRowKeys)]="selectedRows"
+                                [(filterValue)]="filter"
+                                >
+                    <dxo-filter-row [visible]="true"> </dxo-filter-row>
+                    <dxo-selection
+                      selectAllMode="page"
+                      showCheckBoxesMode="always"                      
+                      mode="multiple"
+                    ></dxo-selection>
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[20, 100, 200]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>                    
+                    <dxo-header-filter [visible]="true" [allowSearch]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>                    
+                    <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="100" dataField="flAtivo" caption="" all></dxi-column>
+                    <div *dxTemplate="let dt of 'cellTemplate'">            
+                      <div style="white-space: nowrap;">
+                        <table width="72" align="center">
+                          <tr>
+                            <td><i class="fa fa-eye button-link" (click)="visualizar($event, dt)" title="Visualizar"></i></td>
+                            <td><i class="fa fa-pencil button-link" (click)="elaborar($event, dt)" title="Elaborar"></i></td>
+                            <td><i class="fa fa-trash button-link" (click)="deletar($event, dt)" title="Inativar"></i></td>
+                            <td><i class="fa fa-undo button-link" (click)="ativar($event, dt)" title="Ativar"></i></td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                    <dxi-column width="70" dataField="idItem" caption="Status" [calculateCellValue]="statusTexto">
+                      <dxo-header-filter [allowSearch]="false"></dxo-header-filter>
+                    </dxi-column>                    
+                    <dxi-column dataField="dsStatusItem" caption="Andamento" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="cdRequest" caption="Cód. Request" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="nrSKU" caption="SKU" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="cdNCM" caption="NCM" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsCurta" caption="Descrição Curta" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="nmUsuario" caption="Login" allowSorting="true"></dxi-column>
+                    <dxi-column cellTemplate="cellTemplate2" [allowFiltering]="false" width="80" dataField="dsPrioridade" caption="Prioridade" all></dxi-column>
+                    <div *dxTemplate="let dt of 'cellTemplate2'" style="text-align: center;">       
+                        <i class="fa fa-circle" ></i>
+                    </div>
+                  </dx-data-grid>
+                </div>
+              </div>      
+            </div>    
+    <div class="row">
+      <div class="col-lg-12">
+        <dx-button 
+          id="button"
+          text="Selecionar itens para elaboração" 
+          class="btn btn-warning" (click)="selecionar()">
+        </dx-button> 
+        &nbsp;&nbsp;
+        <dx-button 
+          id="button"
+          text="Devolver item" 
+          class="btn btn-secondary" (click)="devolver()">
+        </dx-button> 
+      </div>
+    </div>   
+         
+    <dx-popup
+        title="Confirmação"
+        [(visible)]="isPopupConfimarSelecao" [maxHeight]="300" [maxWidth]="600">
+        <div class="centralizado">
+            <p class="msgErro">Você está selecionando item(s) para elaboração. Após realizar esta operação os itens ficarão indisponíveis para seleção de outro elaborador. Tem certeza que deseja prosseguir?</p>
+            <br>
+            <dx-button
+            text="Sim"
+            (onClick)="confirmacaoSelecaoOK()" class="btn btn-warning">
+            </dx-button>
+            &nbsp;&nbsp;
+            <dx-button
+            text="Não"
+            (onClick)="confirmacaoSelecaoCancelar()" class="btn btn-secondary">
+            </dx-button>
+            <br>
+      </div>
+    </dx-popup>
+    <dx-popup
+        title="Confirmação"
+        [(visible)]="isPopupConfimarRetorno" [maxHeight]="300" [maxWidth]="600">
+        <div class="centralizado">
+            <p class="msgErro">Você está retornando o(s) item(s) selecionado(s) para a fila de elaboração. Tem certeza que deseja prosseguir?</p>
+            <br>
+            <dx-button
+            text="Sim"
+            (onClick)="confirmacaoRetornoOK()" class="btn btn-warning">
+            </dx-button>
+            &nbsp;&nbsp;
+            <dx-button
+            text="Não"
+            (onClick)="confirmacaoRetornoCancelar()" class="btn btn-secondary">
+            </dx-button>
+            <br>
+      </div>
+    </dx-popup>
+      <dx-popup
+          title="Confirmação"
+          [(visible)]="isPopupConfimarVisible" [maxHeight]="200" [maxWidth]="400">
+          <div class="centralizado">
+              <p class="msgErro">Tem certeza que deseja excluir o item?</p>
+              <br>
+              <dx-button
+              text="Sim"
+              (onClick)="confirmacaoOK()" class="btn btn-warning">
+              </dx-button>
+              &nbsp;&nbsp;
+              <dx-button
+              text="Não"
+              (onClick)="confirmacaoCancelar()" class="btn btn-secondary">
+              </dx-button>
+              <br>
+        </div>
+      </dx-popup>
+      <dx-popup
+          title="Confirmação"
+          [(visible)]="isPopupConfimarAtivarVisible" [maxHeight]="200" [maxWidth]="400">
+          <div class="centralizado">
+              <p class="msgErro">Tem certeza que deseja reativar o item?</p>
+              <br>
+              <dx-button
+              text="Sim"
+              (onClick)="confirmacaoAtivarOK()" class="btn-warning">
+              </dx-button>
+              &nbsp;&nbsp;
+              <dx-button
+              text="Não"
+              (onClick)="confirmacaoAtivarCancelar()" class="btn btn-secondary">
+              </dx-button>
+              <br>
+        </div>
+      </dx-popup>
+
+  <dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgSucesso">{{msgSucesso}}</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="300">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>
+
+</div>

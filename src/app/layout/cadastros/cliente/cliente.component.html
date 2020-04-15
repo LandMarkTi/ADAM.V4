@@ -1,0 +1,162 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Cadastro de Cliente'" [icon]="'fa-edit'"></app-page-header>
+
+  
+<div class="row" *ngIf="cliente">
+  <div class="col-lg-12">
+    <div class="card">        
+      <div class="card-body">
+        <form class="form-horizontal" (submit)="onFormSubmit($event)">
+          <input type="hidden" name="hdnIdCliente" value="{{cliente.idCliente}}">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-1">
+                <label class="col-form-label" for="appendedInput">Sigla</label>
+                <div class="controls">
+                    <dx-text-box name="dsSigla" value="{{cliente.dsSigla}}" [maxLength]="3" style="text-transform: uppercase;">
+                      <dx-validator>
+                          <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                          <dxi-validation-rule type="stringLength" [min]="3" message="Informe 3 caracteres."></dxi-validation-rule>
+                      </dx-validator>
+                    </dx-text-box>
+                </div>
+              </div> 
+            </div>
+            <div class="row">
+              <div class="col-lg-8">
+                  <label class="col-form-label" for="appendedInput">Nome</label>
+                  <div class="controls">
+                      <dx-text-box name="nmCliente" value="{{cliente.nmCliente}}" maxlength="300">
+                          <dx-validator>
+                              <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>
+                              <dxi-validation-rule type="stringLength" [min]="3" message="Informe 3 caracteres."></dxi-validation-rule>
+                          </dx-validator>
+                      </dx-text-box>
+                  </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2">
+                <label class="col-form-label" for="appendedInput">CNPJ</label>
+                <div class="controls">
+                      <dx-text-box name="nrCNPJ" mask="00.000.000/0000-00" value="{{cliente.nrCNPJ}}" maxlength="3">
+                          <dx-validator>
+                              <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>
+                              <dxi-validation-rule type="custom" [validationCallback]="validaCNPJ" message="CNPJ Inválido"></dxi-validation-rule>
+                          </dx-validator>
+                      </dx-text-box>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <label class="col-form-label" for="appendedInput">Observação</label>
+                <div class="controls">
+                    <dx-text-area
+                        [height]="90"
+                        name="dsObservacao" value="{{cliente.dsObservacao}}" maxlength="6000">
+                    </dx-text-area>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <label class="col-form-label" for="appendedInput">Destinatários</label>
+                <div class="controls">
+                    <dx-data-grid
+                    id="gridDestinatarios"
+                    [(dataSource)]="cliente.destinatarios"
+                    [showBorders]="true"
+                    (onRowInserted)="$event.component.navigateToRow($event.key)"
+                    noDataText="Nehum registro"
+                    >                
+                    <dxo-paging [enabled]="true" [pageSize]="15"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+                    <dxo-editing
+                         mode="cell"
+                         [allowUpdating]="true"
+                         [allowAdding]="true">
+                    </dxo-editing>
+                    <dxi-column cellTemplate="cellTemplate" width="40" [allowEditing]="false"></dxi-column>
+                    <div *dxTemplate="let data of 'cellTemplate'">
+                        <i class="fa fa-trash button-link" (click)="deletar($event, data)"></i>
+                    </div>
+                    <dxi-column
+                        caption="Nome"
+                        dataField="nmDestinatario"                        
+                        [allowSorting]="true"
+                        >
+                        <dxi-validation-rule type="required" message="Nome obrigatório"></dxi-validation-rule>
+                    </dxi-column>
+                    <dxi-column
+                        caption="E-mail"
+                        dataField="dsEmail"
+                        [allowSorting]="true">
+                        <dxi-validation-rule type="required" message="E-mail obrigatório"></dxi-validation-rule>
+                        <dxi-validation-rule type="email" message="E-mail inválido"></dxi-validation-rule>                        
+                    </dxi-column>
+                </dx-data-grid>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <dx-button 
+                          id="button"
+                          text="Salvar" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                      </dx-button> 
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Cancelar" 
+                          class="btn btn-secondary" (click)="goToPage('/listaclientes')">
+                      </dx-button> 
+                  </div>
+              </div>
+                  
+                
+          </div>
+        </form>
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+
+</div>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="200">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br><br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

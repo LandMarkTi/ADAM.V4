@@ -1,0 +1,236 @@
+/* You can add global styles to this file, and also import other style files */
+@import "bootstrap/bootstrap";
+@import "spinner";
+@import "utils";
+@import "rtl";
+@import "responsive";
+
+@media print {
+    .breadcrumb {
+        display: none !important;
+    }
+}
+
+.button-link{
+font-size: x-large;
+
+}
+.button-link:hover{
+    cursor: pointer;
+}
+
+.exemplo-link{
+    font-size: 1em;
+    text-decoration: underline;
+    padding-left: 5px;
+}
+
+.exemplo-link:hover{
+    cursor: pointer;
+}
+
+.centralizado{
+    text-align: center;
+}
+.nomesistema{
+    color:#F6E51C;
+    position: absolute; /* Reposition logo from the natural layout */
+    left: 75px;
+    bottom: 4px;
+    font-size: 16pt;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.msgErro{
+    color:red;
+    font-size: large;
+    padding: 10px;
+}
+
+.msgErroFundoAmarelo{
+    color:red;
+    font-size: large;
+    background-color: #F6E51C;
+    padding: 10px;
+    border-radius: 25px;
+}
+
+.msgSucesso{
+    color:green;
+    font-size: large;
+}
+
+.dx-popup-title.dx-toolbar {  
+  background-color:#F6E51C;
+  color: #343a40;
+}  
+
+.popUpScrollable
+{
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.sidebar[_ngcontent-kmo-c3] .list-group[_ngcontent-kmo-c3] .a[_ngcontent-kmo-c3]:hover
+{  
+    background-color:#F6E51C;
+    color: #343a40;
+  }
+
+#container .dx-popup-normal {  
+    border: 10px solid #222 !important;  
+    border-radius: 5px !important;  
+}
+
+.dx-datagrid-headers {  
+    position: relative;
+  outline: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-touch-callout: none;
+    background-color: #343a40;  
+    color:#F6E51C;
+}
+
+.dx-datagrid .dx-header-filter-empty{
+    color:#F6E51C;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.col-form-label-nowrap {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.dx-texteditor.dx-state-readonly {
+    border-style: solid;
+    background-color: #ddd;
+}
+
+fieldset.scheduler-border {
+    border: 1px groove #ddd !important;
+    padding: 0 1em 1em 1em !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+    legend.scheduler-border {
+        font-size: 1.2em !important;
+        font-weight: bold !important;
+        text-align: left !important;
+        width:auto;
+        padding:0 10px;
+        border-bottom:none;
+    }
+
+    .text-align-right {
+        text-align: right;
+    }
+
+    .btn-fino
+    {
+        width:300px;
+        padding: 0px;        
+    }
+
+    .breadcrumb{
+        background-color: #F6E51C;
+    }
+
+    .breadcrumb-item.active{
+        color: #000;
+        font-size: large;
+        font-weight: bold;
+    }
+
+    .forgottenPws{
+        color: #F6E51C;
+    }
+
+    .forgottenPws:hover {
+        cursor: pointer;
+    }
+
+    .bottom-zero {
+        margin-bottom:0px;
+    }
+
+    .margin-left-10 {
+        margin-left: 10px;
+    }
+
+    #bg {
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+          
+        /* Preserve aspet ratio */
+        min-width: 100%;
+        min-height: 100%;        
+      }
+
+      .tinted {    
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 25px;
+    }
+
+    .NomeSistema {
+        color: #F6E51C;
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .TextoNegritoVermelho {
+        color: red;
+        font-weight: bold;
+    }
+
+    .divCampoObrigatorio {
+        background-color: #D9534F;
+        color: white;
+        padding: 2px;
+        width: 120px;
+        height: 36px;
+        font-size: 11px;
+        text-align: center;
+        border-radius: 5px;
+        padding-top: 9px;
+    }
+
+    .iconeVerde {
+        color:green;
+    }
+
+    .iconeVermelho {
+        color:red;
+    }
+
+    .dx-datagrid-header-panel .dx-apply-button .dx-icon {
+        color: #F6E51C;
+    }
+
+    .dx-datagrid-header-panel .dx-apply-button {
+        background-color: black;
+        border-color: #F6E51C;
+    }
+
+    .dx-state-disabled.dx-widget, .dx-state-disabled .dx-widget 
+    {
+        opacity: 1;        
+
+    }
+
+    .dx-state-disabled.dx-button .dx-icon, .dx-state-disabled .dx-button .dx-icon{
+        opacity: .96
+    }
+
+    .dx-toolbar-after .dx-toolbar-item:first-child {
+        cursor: pointer;
+    }

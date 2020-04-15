@@ -1,0 +1,209 @@
+<div [@routerTransition]>
+  <app-page-header [heading]="'Cadastro de Tratamento Administrativo'" [icon]="'fa-edit'"></app-page-header>
+
+  
+<div class="row" *ngIf="tratAdm">
+  <div class="col-lg-12">
+    <div class="card">        
+      <div class="card-body">
+        <form class="form-horizontal" (submit)="onFormSubmit($event)">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-lg-12">
+                <label class="col-form-label">Código NCM</label>
+                <div class="controls">
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <dx-text-box name="cdNCM" [maxLength]="8" [width]="90" (onValueChanged)="updateNcmInfo($event)" [(value)]="tratAdm.cdNCM">
+                                <dx-validator>
+                                    <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                                </dx-validator>
+                              </dx-text-box>
+                        </div>
+                        <div class="col-lg-8">
+                            <dx-text-box name="dsNCM" [readOnly]="true" [(value)]="tratAdm.dsNCM"></dx-text-box>
+                        </div>        
+                    </div>                    
+                </div>
+              </div> 
+            </div>
+            <div class="row">
+              <div class="col-lg-2">
+                <label class="col-form-label">Data Inicial</label>
+                <div class="controls">
+                    <dx-date-box
+                        [(value)]="tratAdm.dtInicial"
+                        displayFormat="dd/MM/yyyy"
+                        type="date">
+                    </dx-date-box>                  
+                </div>
+              </div>
+                <div class="col-lg-2">
+                  <label class="col-form-label">Data Final</label>
+                  <div class="controls">
+                      <dx-date-box
+                      [(value)]="tratAdm.dtFinal"
+                      displayFormat="dd/MM/yyyy"
+                      type="date">
+                  </dx-date-box>  
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <label class="col-form-label">Tipo</label>
+                  <div class="controls">
+                    <dx-text-box name="dsTipo" [(value)]="tratAdm.dsTipo" maxlength="20">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="col-form-label">Orgao</label>
+                  <div class="controls">
+                    <dx-text-box name="dsTipo" [(value)]="tratAdm.dsOrgao" maxlength="20">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <label class="col-form-label">Finalidade</label>
+                  <div class="controls">
+                    <dx-text-box name="dsFinalidade" [(value)]="tratAdm.dsFinalidade" maxlength="20">
+                    </dx-text-box>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-3">
+                  <label class="col-form-label">Destaque</label>
+                  <div class="controls">
+                    <dx-text-box name="dsDestaque" [(value)]="tratAdm.dsDestaque" maxlength="20">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="col-lg-9">
+                    <label class="col-form-label">Descrição do destaque</label>
+                    <div class="controls">
+                      <dx-text-box name="dsDescDestaque" [(value)]="tratAdm.dsDescDestaque" maxlength="100">
+                      </dx-text-box>
+                    </div>
+                  </div>
+              </div>
+              <!-- <div class="row">
+                <div class="col-lg-6">
+                  <label class="col-form-label">Tratamento</label>
+                  <div class="controls">
+                    <dx-text-box name="dsTratamento" [(value)]="tratAdm.dsTratamento" maxlength="100">
+                    </dx-text-box>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <label class="col-form-label">Função</label>
+                  <div class="controls">
+                    <dx-text-box name="dsFuncao" [(value)]="tratAdm.dsFuncao" maxlength="100">
+                    </dx-text-box>
+                  </div>
+                </div>
+              </div> -->
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="col-form-label">Tratamento</label>
+                  <div class="controls">
+                    <dx-text-box name="dsTratamento" [(value)]="tratAdm.dsTratamento" maxlength="100">
+                    </dx-text-box>
+                  </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <label class="col-form-label">Função</label>
+                    <div class="controls">
+                      <dx-text-box name="dsFuncao" [(value)]="tratAdm.dsFuncao" maxlength="100">
+                      </dx-text-box>
+                    </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <label class="col-form-label">País</label>
+                  <div class="controls">
+                    <dx-text-box name="dsPais" [(value)]="tratAdm.dsPais" maxlength="100">
+                    </dx-text-box>
+                  </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <label class="col-form-label">Exceção</label>
+                    <div class="controls">
+                      <dx-text-box name="dsExcecao" [(value)]="tratAdm.dsExcecao" maxlength="100">
+                      </dx-text-box>
+                    </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <label class="col-form-label">Notas</label>
+                  <div class="controls">
+                    <dx-text-area [height]="90" name="dsNotas" [(value)]="tratAdm.dsNotas" maxlength="500">
+                    </dx-text-area>
+                  </div>
+                  </div>
+              </div>
+          <div class="form-actions">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <Br>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <dx-button 
+                          id="button"
+                          text="Salvar" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                      </dx-button> 
+                      &nbsp;&nbsp;
+                      <dx-button 
+                          id="button"
+                          text="Cancelar" 
+                          class="btn btn-secondary" (click)="voltar()">
+                      </dx-button> 
+                  </div>
+              </div>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div> <!--/.col-->
+</div>
+
+</div>
+
+<dx-popup
+    title="Sucesso"
+    [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="200">
+    <div class="centralizado">
+        <p class="msgSucesso">Salvo com sucesso!</p>
+        <dx-button
+        text="OK"
+        (onClick)="fecharSucesso()" class="btn btn-warning">
+    </dx-button>
+    <br>
+  </div>
+</dx-popup>
+
+<dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="400">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>
+        <br><br>
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

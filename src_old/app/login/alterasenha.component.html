@@ -1,0 +1,64 @@
+<div class="login-page" [@routerTransition]>
+        <div class="row justify-content-md-center">
+            <div class="col-md-3">
+                <img src="assets/images/logo.png"/>            
+                <form class="form-horizontal" (submit)="onFormSubmit($event)">
+                    <div class="form-content">                 
+                        <div class="form-group">
+                            <dx-text-box mode="password" [maxLength]="20" placeholder="{{ 'Senha' | translate }}" [(value)]="usuario.dsPassword">
+                                <dx-validator>
+                                    <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                                </dx-validator>
+                            </dx-text-box>
+                        </div>
+                        <div class="form-group">
+                            <dx-text-box mode="password" [maxLength]="20" placeholder="{{ 'Redigite a senha' | translate }}" [(value)]="pwdCheck">
+                                <dx-validator>
+                                    <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                                </dx-validator>
+                            </dx-text-box>
+                        </div>
+                    </div> 
+                    <dx-button 
+                              id="button"
+                              text="Confirmar" 
+                              [useSubmitBehavior]="true" class="btn btn-warning">
+                    </dx-button>
+                    &nbsp;
+                    <dx-button 
+                              id="button"
+                              text="Cancelar" 
+                              class="btn btn-warning" (onClick)="cancelarAlteracao()">
+                    </dx-button>
+                    <Br><Br>                
+                    <div class="form-group">
+                            &nbsp;<p class="msgErro">{{msgErro}}</p>&nbsp;
+                    </div>   
+                </form>
+            </div>
+        </div>
+    </div>
+    <dx-popup
+        title="Sucesso"
+        [(visible)]="isPopupVisible" (onHidden)="popup_hidden($event)" [maxHeight]="200" [maxWidth]="300">
+        <div class="centralizado">
+            <p class="msgSucesso">Senha alterada com sucesso!</p>
+            <br>
+            <dx-button
+            text="OK"
+            (onClick)="fecharSucesso()" class="btn btn-warning">
+        </dx-button>
+        <br>
+      </div>
+    </dx-popup>
+    <dx-popup
+    title="Erro"
+    [(visible)]="isPopupErroVisible" [maxHeight]="200" [maxWidth]="500">
+    <div class="centralizado">
+        <p class="msgErro">{{msgErroValidacao}}</p>        
+        <dx-button
+        text="OK"
+        (onClick)="fecharErro()">
+    </dx-button>
+  </div>
+</dx-popup>

@@ -1,0 +1,154 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'Lista de Itens'" [icon]="'fa-edit'"></app-page-header>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Novo Item" 
+                class="btn btn-warning"
+                (onClick)="novoItem()">
+            </dx-button>
+            &nbsp;
+            <dx-button 
+                id="button"
+                text="Importar planilha" 
+                class="btn btn-warning"
+                (onClick)="ExibirEsconderUpload()">
+            </dx-button>
+        </div>
+    </div>
+    <div class="row" *ngIf='isShow'>
+      <div class="col-lg-12">
+        <Br>
+          <div class="card bg-light mb-3">
+              <div class="card-header">Carregamento de itens por planilha</div>
+              <div class="card-body">
+                  <div class="control-group">
+                    <table>
+                      <tr>
+                        <td><i class="fa fa-download button-link" (click)="downloadExemplo()" title="Download da planilha de layout"></i><span (click)="downloadExemplo()" class="exemplo-link">Download da planilha de layout</span></td>
+                      </tr>
+                    </table>                 
+                    <br>
+                    <table>
+                      <tr>
+                        <Td width="300"><dx-text-box name="filePath" value="{{filePath}}" readOnly="true"></dx-text-box></Td>
+                        <Td><label for="arquivo" *ngIf="!btnUploadNaoVisivel" class="btn btn-warning bottom-zero margin-left-10">Selecione o arquivo</label></Td>
+                        <Td>
+                          <button class="btn btn-success margin-left-10" (click)="onUpload($event)" *ngIf="btnUploadNaoVisivel">Fazer upload</button>                                
+                          <button class="btn btn-danger margin-left-10" (click)="onCancelUpload()" *ngIf="btnUploadNaoVisivel">Cancelar upload</button>
+                        </Td>
+                      </tr>
+                    </table>
+                    <input type="hidden" name="idRequest" value="{{idRequest}}">
+                    <input #myInput type="file" id="arquivo" style="display:none" (change)="fileProgress($event)" />
+                  </div> 
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="card-body">
+                  <dx-data-grid [dataSource]="itens"
+                                height="600"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                (onCellPrepared)="onCellPrepared($event)"
+                                noDataText="Nehum registro">
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+                    <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="100" dataField="flAtivo" caption="" all></dxi-column>
+                    <div *dxTemplate="let dt of 'cellTemplate'">            
+                      <div style="white-space: nowrap;">
+                          <table width="72" align="center">
+                              <tr>
+                                <td><i class="fa fa-pencil button-link" (click)="editar($event, dt)" title="Editar"></i></td>
+                                <td><i class="fa fa-trash button-link" (click)="deletar($event, dt)" title="Inativar"></i></td>
+                                <td><i class="fa fa-undo button-link" (click)="ativar($event, dt)" title="Ativar"></i></td>
+                              </tr>
+                            </table>
+                      </div>
+                    </div>
+                    <dxi-column width="70" dataField="idItem" caption="Status" [calculateCellValue]="statusTexto"></dxi-column>                    
+                    <dxi-column dataField="nrSKU" caption="SKU" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="cdNCM" caption="NCM" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="dsCurta" caption="Descrição" allowSorting="true" [calculateCellValue]="descricaoTexto"></dxi-column>
+                  </dx-data-grid>
+                </div>
+              </div>      
+    </div>
+</div>
+<dx-popup
+          title="Confirmação"
+          [(visible)]="isPopupConfimarVisible" [maxHeight]="200" [maxWidth]="400">
+          <div class="centralizado">
+              <p class="msgErro">Tem certeza que deseja excluir o item?</p>
+              <br>
+              <dx-button
+              text="Sim"
+              (onClick)="confirmacaoOK()" class="btn btn-warning">
+              </dx-button>
+              &nbsp;&nbsp;
+              <dx-button
+              text="Não"
+              (onClick)="confirmacaoCancelar()" class="btn btn-secondary">
+              </dx-button>
+              <br>
+        </div>
+</dx-popup>
+<dx-popup
+          title="Confirmação"
+          [(visible)]="isPopupConfimarAtivarVisible" [maxHeight]="200" [maxWidth]="400">
+          <div class="centralizado">
+              <p class="msgErro">Tem certeza que deseja reativar o item?</p>
+              <br>
+              <dx-button
+              text="Sim"
+              (onClick)="confirmacaoAtivarOK()" class="btn btn-warning">
+              </dx-button>
+              &nbsp;&nbsp;
+              <dx-button
+              text="Não"
+              (onClick)="confirmacaoAtivarCancelar()" class="btn btn-secondary">
+              </dx-button>
+              <br>
+        </div>
+</dx-popup>
+<dx-popup
+          title="Erros gerados durante a importação"
+          [(visible)]="isPopupErrosImportacaoVisible" [maxHeight]="500" [maxWidth]="900">
+          <div class="centralizado">
+            <dx-data-grid [dataSource]="errosImportacao"
+                        height="300"
+                        showBorders="true"
+                        [rowAlternationEnabled]="true"
+                        [repaintChangesOnly]="true"
+                        noDataText="Nehum registro">
+            <dxo-export [enabled]="true"></dxo-export>
+            <dxo-pager [showPageSizeSelector]="false" ></dxo-pager>
+            <dxo-paging [enabled]="false"></dxo-paging>
+            <dxo-header-filter [visible]="true"></dxo-header-filter>
+            <dxo-search-panel [visible]="false"></dxo-search-panel>            
+            <dxi-column dataField="sku" caption="SKU" allowSorting="true"></dxi-column>
+            <dxi-column dataField="nmColuna" caption="Coluna" allowSorting="true"></dxi-column>
+            <dxi-column dataField="dsErro" caption="Erro" allowSorting="true"></dxi-column>
+            </dx-data-grid>
+              <br>
+              <dx-button
+              text="Fechar"
+              (onClick)="fecharErros()" class="btn btn-warning">
+              </dx-button>
+        </div>
+</dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

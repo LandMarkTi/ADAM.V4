@@ -1,0 +1,98 @@
+<div [@routerTransition]>
+    <app-page-header [heading]="'Lista de Solicitações'" [icon]="'fa-edit'"></app-page-header>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <dx-button 
+                id="button"
+                text="Nova solicitação" 
+                class="btn btn-warning"
+                (onClick)="novaSolicitacao()">
+            </dx-button>             
+        </div>
+    </div>
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="card-body">
+                  <dx-data-grid [dataSource]="solicitacoes"
+                                height="600"
+                                showBorders="true"
+                                [rowAlternationEnabled]="true"
+                                [repaintChangesOnly]="true"
+                                (onCellPrepared)="onCellPrepared($event)"
+                                noDataText="Nehum registro">
+                    <dxo-pager [showPageSizeSelector]="true"
+                               [allowedPageSizes]="[5, 10, 20]"></dxo-pager>
+                    <dxo-paging [enabled]="true" [pageSize]="5"></dxo-paging>
+                    <dxo-header-filter [visible]="true"></dxo-header-filter>
+                    <dxo-search-panel [visible]="true" placeholder="Busca..."></dxo-search-panel>
+                    <dxi-column cellTemplate="cellTemplate" [allowFiltering]="false" width="40" dataField="flAtivo" caption="" all></dxi-column>
+                    <div *dxTemplate="let dt of 'cellTemplate'">            
+                      <div style="white-space: nowrap;">
+                          <table width="30" align="center">
+                              <tr>
+                                <td><i class="fa fa-pencil button-link" (click)="editarSolicitacao($event, dt)" title="Editar"></i></td>                                
+                              </tr>
+                            </table>
+                      </div>
+                    </div>
+                    <dxi-column dataField="cnpj"  width="180" caption="CNPJ" allowSorting="true"></dxi-column>
+                    <dxi-column dataField="nomeProjeto" caption="Nome do Projeto" allowSorting="true"></dxi-column>
+                    <dxi-column width="100" dataField="idTipoUrgencia" caption="Urgente" [calculateCellValue]="urgenciaTexto"></dxi-column>                    
+                    <dxi-column width="180" dataField="dataAprovacaoUrgencia" caption="Data da urgência" [calculateCellValue]="dataAprovacaoUrgenciaTexto" allowSorting="true"></dxi-column>
+                    <dxi-column width="120" dataField="laudos" caption="Laudo" allowSorting="true" cellTemplate="laudoTemplate"></dxi-column>
+                    <dxi-column width="120" dataField="vistas" caption="Pesq. Trib." allowSorting="true" cellTemplate="pesqTribTemplate"></dxi-column>
+                    <div *dxTemplate="let d of 'laudoTemplate'">
+                      <i class="fa fa-check iconeVerde"></i>
+                    </div>
+                    <div *dxTemplate="let d of 'pesqTribTemplate'">
+                      <i class="fa fa-check iconeVerde"></i>
+                    </div>
+                  </dx-data-grid>
+                </div>
+              </div>      
+            </div>    
+        
+          </div>
+          <dx-popup
+          title="Confirmação"
+          [(visible)]="isPopupConfimarVisible" [maxHeight]="200" [maxWidth]="400">
+          <div class="centralizado">
+              <p class="msgErro">Tem certeza que deseja excluir a solicitacao?</p>
+              <br>
+              <dx-button
+              text="Sim"
+              (onClick)="confirmacaoOK()" class="btn btn-warning">
+              </dx-button>
+              &nbsp;&nbsp;
+              <dx-button
+              text="Não"
+              (onClick)="confirmacaoCancelar()" class="btn btn-secondary">
+              </dx-button>
+              <br>
+        </div>
+      </dx-popup>
+      <dx-popup
+          title="Confirmação"
+          [(visible)]="isPopupConfimarAtivarVisible" [maxHeight]="200" [maxWidth]="400">
+          <div class="centralizado">
+              <p class="msgErro">Tem certeza que deseja reativar a request?</p>
+              <br>
+              <dx-button
+              text="Sim"
+              (onClick)="confirmacaoAtivarOK()" class="btn btn-warning">
+              </dx-button>
+              &nbsp;&nbsp;
+              <dx-button
+              text="Não"
+              (onClick)="confirmacaoAtivarCancelar()" class="btn btn-secondary">
+              </dx-button>
+              <br>
+        </div>
+      </dx-popup>
+
+<dx-load-panel
+    [closeOnOutsideClick]="true"
+    [(visible)]="isLoadPanelVisible"
+    message="Aguarde...">
+</dx-load-panel>

@@ -1,0 +1,40 @@
+<div class="login-page" [@routerTransition]>
+    <img src="assets/images/EY_BG.jpg" id="bg" alt="">
+    <div class="row justify-content-md-center ">
+        <div class="col-md-3 tinted">            
+            <br>
+            <span class="NomeSistema">ADAM</span>
+            <form class="form-horizontal" (submit)="onFormSubmit($event)">
+                <div class="form-content ">                 
+                    <div class="form-group">
+                        <dx-text-box name="dsEmail" [maxLength]="300" [(value)]="usuario.dsEmail" placeholder="{{ 'Email' | translate }}">
+                            <dx-validator>
+                                <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                            </dx-validator>
+                        </dx-text-box>
+                    </div>
+                    <div class="form-group">
+                        <dx-text-box name="dsPassword" mode="password" [maxLength]="20" placeholder="{{ 'Senha' | translate }}" [(value)]="usuario.dsPassword">
+                            <dx-validator>
+                                <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                            </dx-validator>
+                        </dx-text-box>
+                    </div>
+                </div> 
+                <dx-button 
+                          id="button"
+                          text="Entrar" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                </dx-button><Br><Br>
+                <span (click)="fogottenPws()" class="forgottenPws">Esqueceu a senha?</span>
+                <br><br>
+                <div class="form-group" *ngIf="msgErro">
+                        &nbsp;<p class="msgErro">{{msgErro}}</p>&nbsp;
+                </div>   
+            </form>
+        </div>    </div>
+</div>
+
+
+
+

@@ -1,0 +1,40 @@
+<div class="login-page" [@routerTransition]>
+    <div class="row justify-content-md-center">
+        <div class="col-md-3">
+            <img src="assets/images/logo.png"/>            
+            <form class="form-horizontal" (submit)="onFormSubmit($event)">
+                <div class="form-content">                 
+                    <div class="form-group">
+                        <span>Insira o código que foi enviado para o email : {{dsEmail}}</span>            
+                    </div>
+                    <div class="form-group">
+                        <dx-number-box format="###0" [(value)]="cdSolicitacaoMudancaSenha" placeholder="{{ 'Código' | translate }}">
+                            <dx-validator>
+                                <dxi-validation-rule type="required" message="Campo obrigatório"></dxi-validation-rule>                            
+                            </dx-validator>
+                        </dx-number-box>
+                    </div>                    
+                </div> 
+                <dx-button 
+                          id="button"
+                          text="Validar código" 
+                          [useSubmitBehavior]="true" class="btn btn-warning">
+                </dx-button>
+                &nbsp;
+                <dx-button 
+                          id="button"
+                          text="Voltar" 
+                          class="btn btn-warning" (onClick)="voltarLogin()">
+                </dx-button>
+                <Br><Br>
+                <div class="form-group">
+                        &nbsp;<p class="msgErro">{{msgErro}}</p>&nbsp;
+                </div>   
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
